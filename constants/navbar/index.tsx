@@ -1,6 +1,6 @@
 import { NavigationItem } from "../../models/interfaces/navigationItem";
 
-export const navigationMenuItems: NavigationItem[] = [
+export const navigationMenuItemsConstant: NavigationItem[] = [
     {
       active: true,
       href: '/',
