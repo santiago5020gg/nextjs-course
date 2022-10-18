@@ -5,8 +5,16 @@ import { Plans } from "../components/home-page/plans";
 import { Movies } from "../components/movies";
 import { MoviesConstant } from "../constants/movies";
 import { PlansConstant } from "../constants/plans";
+import { Movie } from "../models/interfaces/movie";
+import { Plan } from "../models/interfaces/plans";
 
-const Home: NextPage = () => {
+const Home = ({
+  plansList,
+  moviesList,
+}: {
+  plansList: Plan[];
+  moviesList: Movie[];
+}) => {
   return (
     <div>
       <Head>
@@ -16,11 +24,18 @@ const Home: NextPage = () => {
       </Head>
       <div className="flex flex-col gap-y-14">
         <Hero price="9.991,67" />
-        <Plans plans={PlansConstant} />
-        <Movies movies={MoviesConstant} />
+        <Plans plans={plansList} />
+        <Movies movies={moviesList} />
       </div>
     </div>
   );
 };
+
+export async function getStaticProps() {
+  return {
+    props: { plansList: PlansConstant, moviesList: MoviesConstant },
+    revalidate: 10
+  };
+}
 
 export default Home;
