@@ -5,7 +5,7 @@ export default function NavBar({ menuItems }: { menuItems: NavigationItem[] }) {
     <>
       <ul>
         {menuItems.map((elem) => (
-          <li key={elem.href}>{elem.label}</li>
+          <li key={elem.id}>{elem.label}</li>
         ))}
       </ul>
     </>

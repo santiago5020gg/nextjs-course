@@ -1,7 +1,9 @@
-export const Hero = ({ price }: { price: string }) => {
+import { HeroType } from "../../../models/interfaces/hero";
+
+export const Hero = ({ price, description }: HeroType) => {
   return (
     <div className="flex flex-col gap-y-2">
-      <div>COMIENZA A DISFRUTAR LAS MEJORES HISTORIAS HECHAS PARA TI</div>
+      <div>{description}</div>
       <div>
         <div>Los planes empiezan desde</div>
         <div>${price}/mes*</div>

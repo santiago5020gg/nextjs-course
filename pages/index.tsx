@@ -3,17 +3,18 @@ import Head from "next/head";
 import { Hero } from "../components/home-page/hero";
 import { Plans } from "../components/home-page/plans";
 import { Movies } from "../components/movies";
-import { MoviesConstant } from "../constants/movies";
-import { PlansConstant } from "../constants/plans";
+import { HeroType } from "../models/interfaces/hero";
 import { Movie } from "../models/interfaces/movie";
 import { Plan } from "../models/interfaces/plans";
 
 const Home = ({
   plansList,
   moviesList,
+  hero
 }: {
   plansList: Plan[];
   moviesList: Movie[];
+  hero: HeroType;
 }) => {
   return (
     <div>
@@ -23,7 +24,7 @@ const Home = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-col gap-y-14">
-        <Hero price="9.991,67" />
+        <Hero price={hero.price} description={hero.description} />
         <Plans plans={plansList} />
         <Movies movies={moviesList} />
       </div>
@@ -31,10 +32,56 @@ const Home = ({
   );
 };
 
+const getAllMovies = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/movies");
+    if (!response.ok) {
+      throw new Error("Something went wrong ");
+    }
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getAllPlans = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/plans");
+    if (!response.ok) {
+      throw new Error("Something went wrong ");
+    }
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getHero = async () => {
+  try {
+    const response = await fetch("http://localhost:3000/api/hero");
+    if (!response.ok) {
+      throw new Error("Something went wrong ");
+    }
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export async function getStaticProps() {
+  const allMovies = await getAllMovies();
+  const allPlans = await getAllPlans();
+  const hero = await getHero();
   return {
-    props: { plansList: PlansConstant, moviesList: MoviesConstant },
-    revalidate: 10
+    props: {
+      plansList: allPlans,
+      moviesList: allMovies,
+      hero
+    },
+    revalidate: 10,
   };
 }
 
