@@ -1,5 +1,6 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { Hero } from "../components/home-page/hero";
 import { Plans } from "../components/home-page/plans";
 import { Movies } from "../components/movies";
@@ -10,7 +11,7 @@ import { Plan } from "../models/interfaces/plans";
 const Home = ({
   plansList,
   moviesList,
-  hero
+  hero,
 }: {
   plansList: Plan[];
   moviesList: Movie[];
@@ -26,6 +27,7 @@ const Home = ({
       <div className="flex flex-col gap-y-14">
         <Hero price={hero.price} description={hero.description} />
         <Plans plans={plansList} />
+        <Link href="/all-plans">Show all Plans</Link>
         <Movies movies={moviesList} />
       </div>
     </div>
@@ -34,7 +36,7 @@ const Home = ({
 
 const getAllMovies = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/movies");
+    const response = await fetch(`${process.env.DB_HOST}/api/movies`);
     if (!response.ok) {
       throw new Error("Something went wrong ");
     }
@@ -45,9 +47,9 @@ const getAllMovies = async () => {
   }
 };
 
-const getAllPlans = async () => {
+const getInitPlans = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/plans");
+    const response = await fetch(`${process.env.DB_HOST}/api/plans/2`);
     if (!response.ok) {
       throw new Error("Something went wrong ");
     }
@@ -60,7 +62,7 @@ const getAllPlans = async () => {
 
 const getHero = async () => {
   try {
-    const response = await fetch("http://localhost:3000/api/hero");
+    const response = await fetch(`${process.env.DB_HOST}/api/hero`);
     if (!response.ok) {
       throw new Error("Something went wrong ");
     }
@@ -73,13 +75,13 @@ const getHero = async () => {
 
 export async function getStaticProps() {
   const allMovies = await getAllMovies();
-  const allPlans = await getAllPlans();
+  const allPlans = await getInitPlans();
   const hero = await getHero();
   return {
     props: {
       plansList: allPlans,
       moviesList: allMovies,
-      hero
+      hero,
     },
     revalidate: 10,
   };
