@@ -11,7 +11,7 @@ const plans = async (db: any, idplan: string | string[] | undefined) => {
     const collection = db.collection("plans");
     const findResult = await collection
       .find({})
-      .limit(Number(idplan))
+      .limit(Number(idplan) ?? 0)
       .toArray();
     return findResult;
   } catch (error) {
