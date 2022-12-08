@@ -4,8 +4,13 @@ import { MovieDesign } from "./movie";
 export const Movies = ({ movies }: { movies: Movie[] }) => {
   return (
     <div className="flex gap-x-3">
-      {movies.map((elem, index) => (
-        <MovieDesign img={elem.img} title={elem.title} key={elem.id} />
+      {movies.map((elem) => (
+        <MovieDesign
+          img={elem.img}
+          title={elem.title}
+          key={elem.id}
+          id={elem.id}
+        />
       ))}
     </div>
   );

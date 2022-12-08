@@ -2,20 +2,16 @@ import { GetStaticProps } from "next";
 import { MovieDesign } from "../../components/movies/movie";
 import { MoviesConstant } from "../../constants/movies";
 import { Movie } from "../../models/interfaces/movie";
-import { useRouter } from "next/router";
 
 type MovieDetail = Movie & { description: string };
 
 const MovieBySlug = ({ movie }: { movie: MovieDetail }) => {
-  const router = useRouter();
-  if (!movie) {
-    router.push("/404");
-  }
   return (
     <MovieDesign
       img={movie.img}
       title={movie.title}
       description={movie.description}
+      id={movie.id}
     />
   );
 };
@@ -35,9 +31,14 @@ export const getStaticProps: GetStaticProps | null = async (context) => {
   const movie = MoviesConstant.find(
     (elem) => elem.id === slug && elem.enable === true
   );
+  if (!movie) {
+    return {
+      notFound: true,
+    };
+  }
   return {
-    props: movie ? { movie } : { movie: null },
-    revalidate: 10
+    props: { movie },
+    revalidate: 10,
   };
 };
 
