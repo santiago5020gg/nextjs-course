@@ -1,10 +1,12 @@
 import { useContext } from "react";
+import { PeriodContext } from "../../../../contexts/period";
 import { PlanContext, PricePlan } from "../../../../contexts/plans";
 import { Plan } from "../../../../models/interfaces/plans";
 import CustomButton from "../../../buttons/default";
 
 export const PlanDesign = ({ plan }: { plan: Plan }) => {
   const planContext = useContext(PlanContext);
+  const periodContext = useContext(PeriodContext);
 
   const setPlan = (plan: PricePlan) => {
     planContext?.setPlanPrice(plan);
@@ -19,7 +21,9 @@ export const PlanDesign = ({ plan }: { plan: Plan }) => {
       >
         <div className="flex">
           <div>{plan.title}</div>
-          <div>${plan.price}/mes</div>
+          <div>
+            ${plan.price}/{periodContext?.type}
+          </div>
         </div>
         <div className="flex flex-col gap-x-1">
           {plan.benefits.map((elem, index) => (
