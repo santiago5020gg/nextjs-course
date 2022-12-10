@@ -8,6 +8,7 @@ import PlanProvider from "../contexts/plans";
 import { HeroType } from "../models/interfaces/hero";
 import { Movie } from "../models/interfaces/movie";
 import { Plan } from "../models/interfaces/plans";
+import { getEnabledMovies } from "../utils/movie";
 
 const Home = ({
   plansList,
@@ -77,13 +78,14 @@ const getHero = async () => {
 };
 
 export async function getStaticProps() {
-  const allMovies = await getAllMovies();
+  const allMovies: Movie[] = await getAllMovies();
   const allPlans = await getInitPlans();
   const hero = await getHero();
+  const moviesFilter: Movie[] = getEnabledMovies(allMovies);
   return {
     props: {
       plansList: allPlans,
-      moviesList: allMovies,
+      moviesList: moviesFilter,
       hero,
     },
     revalidate: 10,

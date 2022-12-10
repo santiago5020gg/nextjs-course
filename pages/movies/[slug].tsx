@@ -26,9 +26,23 @@ export async function getStaticPaths() {
   };
 }
 
+const getAllMovies = async () => {
+  try {
+    const response = await fetch(`${process.env.DB_HOST}/api/movies`);
+    if (!response.ok) {
+      throw new Error("Something went wrong ");
+    }
+    const jsonData = await response.json();
+    return jsonData;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getStaticProps: GetStaticProps | null = async (context) => {
   const slug = context.params?.slug;
-  const movie = MoviesConstant.find(
+  const allMovies: Movie[] = await getAllMovies();
+  const movie = allMovies.find(
     (elem) => elem.id === slug && elem.enable === true
   );
   if (!movie) {

@@ -12,7 +12,11 @@ export const PlanDesign = ({ plan }: { plan: Plan }) => {
 
   return (
     <>
-      <div className="flex flex-col gap-y-5">
+      <div
+        className={`flex flex-col gap-y-5 ${
+          planContext?.type === plan.title && "bg-gray-200"
+        }`}
+      >
         <div className="flex">
           <div>{plan.title}</div>
           <div>${plan.price}/mes</div>
