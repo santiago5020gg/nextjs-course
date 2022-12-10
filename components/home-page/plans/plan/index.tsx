@@ -1,7 +1,15 @@
+import { useContext } from "react";
+import { PlanContext, PricePlan } from "../../../../contexts/plans";
 import { Plan } from "../../../../models/interfaces/plans";
 import CustomButton from "../../../buttons/default";
 
 export const PlanDesign = ({ plan }: { plan: Plan }) => {
+  const planContext = useContext(PlanContext);
+
+  const setPlan = (plan: PricePlan) => {
+    planContext?.setPlanPrice(plan);
+  };
+
   return (
     <>
       <div className="flex flex-col gap-y-5">
@@ -14,7 +22,11 @@ export const PlanDesign = ({ plan }: { plan: Plan }) => {
             <div key={index}>+ {elem}.</div>
           ))}
         </div>
-        <CustomButton>Elige plan {plan.title}</CustomButton>
+        <CustomButton
+          onClick={() => setPlan({ price: plan.price, type: plan.title })}
+        >
+          Elige plan {plan.title}
+        </CustomButton>
       </div>
     </>
   );

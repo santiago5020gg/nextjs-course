@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Hero } from "../components/home-page/hero";
 import { Plans } from "../components/home-page/plans";
 import { Movies } from "../components/movies";
+import PlanProvider from "../contexts/plans";
 import { HeroType } from "../models/interfaces/hero";
 import { Movie } from "../models/interfaces/movie";
 import { Plan } from "../models/interfaces/plans";
@@ -25,10 +26,12 @@ const Home = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-col gap-y-14">
-        <Hero price={hero.price} description={hero.description} />
-        <Plans plans={plansList} />
-        <Link href="/all-plans">Show all Plans</Link>
-        <Movies movies={moviesList} />
+        <PlanProvider>
+          <Hero price={hero.price} description={hero.description} />
+          <Plans plans={plansList} />
+          <Link href="/all-plans">Show all Plans</Link>
+          <Movies movies={moviesList} />
+        </PlanProvider>
       </div>
     </div>
   );
