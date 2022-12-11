@@ -45,7 +45,7 @@ const getAllMovies = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/movies`);
     if (!response.ok) {
-      return Promise.reject(response);
+      throw response;
     }
     const jsonData = await response.json();
     return jsonData;
@@ -58,7 +58,7 @@ const getInitPlans = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/plans/2`);
     if (!response.ok) {
-      return Promise.reject(response);
+      throw response;
     }
     const jsonData = await response.json();
     return jsonData;
@@ -71,7 +71,7 @@ const getHero = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/hero`);
     if (!response.ok) {
-      return Promise.reject(response);
+      throw response;
     }
     const jsonData = await response.json();
     return jsonData;

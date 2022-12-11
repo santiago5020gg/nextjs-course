@@ -5,7 +5,7 @@ const getAllPlans = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/plans/all`);
     if (!response.ok) {
-      return Promise.reject(response);
+      throw response;
     }
     const jsonData = await response.json();
     return jsonData;
