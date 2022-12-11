@@ -43,7 +43,7 @@ const Home = ({
 
 const getAllMovies = async () => {
   try {
-    const response = await fetch(`${process.env.DB_HOST}/api/movies`);
+    const response = await fetch(`${process.env.API_URL}/api/movies`);
     if (!response.ok) {
       throw new Error("Something went wrong ");
     }
@@ -56,7 +56,7 @@ const getAllMovies = async () => {
 
 const getInitPlans = async () => {
   try {
-    const response = await fetch(`${process.env.DB_HOST}/api/plans/2`);
+    const response = await fetch(`${process.env.API_URL}/api/plans/2`);
     if (!response.ok) {
       throw new Error("Something went wrong ");
     }
@@ -69,7 +69,7 @@ const getInitPlans = async () => {
 
 const getHero = async () => {
   try {
-    const response = await fetch(`${process.env.DB_HOST}/api/hero`);
+    const response = await fetch(`${process.env.API_URL}/api/hero`);
     if (!response.ok) {
       throw new Error("Something went wrong ");
     }

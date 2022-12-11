@@ -28,7 +28,7 @@ export async function getStaticPaths() {
 
 const getAllMovies = async () => {
   try {
-    const response = await fetch(`${process.env.DB_HOST}/api/movies`);
+    const response = await fetch(`${process.env.API_URL}/api/movies`);
     if (!response.ok) {
       throw new Error("Something went wrong ");
     }

@@ -3,7 +3,7 @@ import { Plan } from "../../models/interfaces/plans";
 
 const getAllPlans = async () => {
   try {
-    const response = await fetch(`${process.env.DB_HOST}/api/plans/all`);
+    const response = await fetch(`${process.env.API_URL}/api/plans/all`);
     if (!response.ok) {
       throw new Error("Something went wrong ");
     }
