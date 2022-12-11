@@ -24,6 +24,7 @@ export default async function handler(
   try {
     const db = await connectMongoDb();
     if (req.method === "GET") {
+      console.log('NextApiRequest jajaja');
       const results = await hero(db);
       res.status(200).json(results);
     }
