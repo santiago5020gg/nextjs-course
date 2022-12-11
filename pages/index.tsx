@@ -52,7 +52,7 @@ const getAllMovies = async () => {
     const jsonData = await response.json();
     return jsonData;
   } catch (error) {
-    console.log("Something went wrong.", error);
+    console.log("Something went wrong. getAllMovies ", error);
   }
 };
 
@@ -67,7 +67,7 @@ const getInitPlans = async () => {
     const jsonData = await response.json();
     return jsonData;
   } catch (error) {
-    console.log("Something went wrong.", error);
+    console.log("Something went wrong. getInitPlans", error);
   }
 };
 
@@ -82,7 +82,7 @@ const getHero = async () => {
     const jsonData = await response.json();
     return jsonData;
   } catch (error) {
-    console.log("Something went wrong.", error);
+    console.log("Something went wrong. getHero", error);
   }
 };
 

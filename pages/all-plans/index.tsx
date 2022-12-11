@@ -12,7 +12,7 @@ const getAllPlans = async () => {
     const jsonData = await response.json();
     return jsonData;
   } catch (error) {
-    console.log("Something went wrong.", error);
+    console.log("Something went wrong. getAllPlans", error);
   }
 };
 
