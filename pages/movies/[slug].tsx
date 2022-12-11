@@ -30,6 +30,7 @@ const getAllMovies = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/movies`);
     if (!response.ok) {
+      console.log('response.ok error ',response);
       return Promise.reject(response);
     }
     const jsonData = await response.json();
