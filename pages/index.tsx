@@ -45,12 +45,12 @@ const getAllMovies = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/movies`);
     if (!response.ok) {
-      throw new Error("Something went wrong ");
+      return Promise.reject(response);
     }
     const jsonData = await response.json();
     return jsonData;
   } catch (error) {
-    console.log(error);
+    console.log("Something went wrong.", error);
   }
 };
 
@@ -58,12 +58,12 @@ const getInitPlans = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/plans/2`);
     if (!response.ok) {
-      throw new Error("Something went wrong ");
+      return Promise.reject(response);
     }
     const jsonData = await response.json();
     return jsonData;
   } catch (error) {
-    console.log(error);
+    console.log("Something went wrong.", error);
   }
 };
 
@@ -71,12 +71,12 @@ const getHero = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/hero`);
     if (!response.ok) {
-      throw new Error("Something went wrong ");
+      return Promise.reject(response);
     }
     const jsonData = await response.json();
     return jsonData;
   } catch (error) {
-    console.log(error);
+    console.log("Something went wrong.", error);
   }
 };
 
