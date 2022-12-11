@@ -34,6 +34,7 @@ const getAllMovies = async () => {
       const text = await response.text();
       throw new Error(text);
     }
+    console.log('El response getAllMovies',response);
     const jsonData = await response.json();
     return jsonData;
   } catch (error) {
