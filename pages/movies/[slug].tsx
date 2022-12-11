@@ -29,6 +29,7 @@ export async function getStaticPaths() {
 const getAllMovies = async () => {
   try {
     const response = await fetch(`${process.env.API_URL}/api/movies`);
+    console.log('url getallmovies ',process.env.API_URL);
     if (!response.ok) {
       console.log('getAllMovies response.ok');
       const text = await response.text();
