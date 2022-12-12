@@ -1,31 +1,21 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import connectMongoDb from "../../models/services/mongodb/config";
+import { setTimeout } from "timers/promises";
+import { HeroConstant } from "../../constants/hero";
 
-type Data = {
-  name: string;
-};
-
-const hero = async (db: any) => {
-  try {
-    const collection = db.collection("hero");
-    const findResult = await collection.findOne();
-    return findResult;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
+const data = async () => {
+  const response = HeroConstant;
+  await setTimeout(2000);
+  return response;
+}
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<any>
 ) {
   try {
-    const db = await connectMongoDb();
     if (req.method === "GET") {
-      console.log('NextApiRequest jajaja');
-      const results = await hero(db);
+      const results = await data();
       res.status(200).json(results);
     }
   } catch (error:any) {
