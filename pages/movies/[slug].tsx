@@ -2,6 +2,7 @@ import { GetStaticProps } from "next";
 import { MovieDesign } from "../../components/movies/movie";
 import { MoviesConstant } from "../../constants/movies";
 import { Movie } from "../../models/interfaces/movie";
+import connectMongoDb from "../../models/services/mongodb/config";
 
 type MovieDetail = Movie & { description: string };
 
@@ -28,18 +29,18 @@ export async function getStaticPaths() {
 
 const getAllMovies = async () => {
   try {
-    const response = await fetch(`${process.env.API_URL}/api/movies`);
-    console.log('url getallmovies ',process.env.API_URL);
-    if (!response.ok) {
-      console.log('getAllMovies response.ok');
-      const text = await response.text();
-      throw new Error(text);
-    }
-    console.log('El response getAllMovies',response);
-    const jsonData = await response.json();
-    return jsonData;
+    const db = await connectMongoDb();
+    const collection = db.collection("movies");
+    const findResult: Movie[] = await collection.find({}).toArray();
+    return findResult.map((elem) => ({
+      id: elem.id,
+      title: elem.title,
+      img: elem.img,
+      enable: elem.enable,
+    }));
   } catch (error) {
-    console.log("Something went wrong. getAllMovies", error);
+    console.log(error);
+    return [];
   }
 };
 

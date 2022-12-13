@@ -1,6 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { title } from "process";
+import { useEffect, useState } from "react";
 import { Hero } from "../components/home-page/hero";
 import { Plans } from "../components/home-page/plans";
 import { Movies } from "../components/movies";
@@ -9,17 +11,38 @@ import PlanProvider from "../contexts/plans";
 import { HeroType } from "../models/interfaces/hero";
 import { Movie } from "../models/interfaces/movie";
 import { Plan } from "../models/interfaces/plans";
+import connectMongoDb from "../models/services/mongodb/config";
 import { getEnabledMovies } from "../utils/movie";
 
 const Home = ({
-  plansList,
   moviesList,
   hero,
 }: {
-  plansList: Plan[];
   moviesList: Movie[];
   hero: HeroType;
 }) => {
+  const [plansList, setPlansList] = useState<Plan[] | null>(null);
+
+  const getInitPlans = async () => {
+    try {
+      const response = await fetch(`/api/plans/2`);
+      if (!response.ok) {
+        console.log("getInitPlans response.ok");
+        const text = await response.text();
+        throw new Error(text);
+      }
+      const jsonData = await response.json();
+      setPlansList(jsonData);
+      return jsonData;
+    } catch (error) {
+      console.log("Something went wrong. getInitPlans", error);
+    }
+  };
+
+  useEffect(() => {
+    getInitPlans();
+  }, []);
+
   return (
     <div>
       <Head>
@@ -41,58 +64,46 @@ const Home = ({
   );
 };
 
-const getAllMovies = async () => {
+const getAllMovies = async (db: any) => {
   try {
-    const response = await fetch(`${process.env.API_URL}/api/movies`);
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(text);
-    }
-    const jsonData = await response.json();
-    return jsonData;
+    const collection = db.collection("movies");
+    const findResult: Movie[] = await collection.find({}).toArray();
+    return findResult.map((elem) => ({
+      id: elem.id,
+      title: elem.title,
+      img: elem.img,
+      enable: elem.enable,
+    }));
   } catch (error) {
-    console.log("Something went wrong. getAllMovies ", error);
+    console.log(error);
+    return error;
   }
 };
 
-const getInitPlans = async () => {
+const getHero = async (db: any) => {
   try {
-    const response = await fetch(`${process.env.API_URL}/api/plans/2`);
-    if (!response.ok) {
-      console.log("getInitPlans response.ok");
-      const text = await response.text();
-      throw new Error(text);
-    }
-    const jsonData = await response.json();
-    return jsonData;
-  } catch (error) {
-    console.log("Something went wrong. getInitPlans", error);
-  }
-};
-
-const getHero = async () => {
-  try {
-    const response = await fetch(`${process.env.API_URL}/api/hero`);
-    if (!response.ok) {
-      console.log("getHero response.ok");
-      const text = await response.text();
-      throw new Error(text);
-    }
-    const jsonData = await response.json();
-    return jsonData;
+    const collection = db.collection("hero");
+    const findResult: HeroType = await collection.findOne();
+    console.log("heroeeeea ", findResult);
+    return { price: findResult.price, description: findResult.description };
   } catch (error) {
     console.log("Something went wrong. getHero", error);
+    return error;
   }
 };
 
 export async function getStaticProps() {
-  const allMovies: Movie[] = await getAllMovies();
-  const allPlans = await getInitPlans();
-  const hero = await getHero();
-  const moviesFilter: Movie[] = getEnabledMovies(allMovies);
+  const db = await connectMongoDb();
+  const allMovies: any = await getAllMovies(db);
+  const hero = await getHero(db);
+  console.log("el heroe ", hero);
+  let formatedAllMovies: Movie[] = [];
+  if (allMovies && allMovies?.length) {
+    formatedAllMovies = allMovies;
+  }
+  const moviesFilter: Movie[] = getEnabledMovies(formatedAllMovies);
   return {
     props: {
-      plansList: allPlans,
       moviesList: moviesFilter,
       hero,
     },
