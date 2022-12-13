@@ -84,7 +84,6 @@ const getHero = async (db: any) => {
   try {
     const collection = db.collection("hero");
     const findResult: HeroType = await collection.findOne();
-    console.log("heroeeeea ", findResult);
     return { price: findResult.price, description: findResult.description };
   } catch (error) {
     console.log("Something went wrong. getHero", error);
@@ -96,7 +95,6 @@ export async function getStaticProps() {
   const db = await connectMongoDb();
   const allMovies: any = await getAllMovies(db);
   const hero = await getHero(db);
-  console.log("el heroe ", hero);
   let formatedAllMovies: Movie[] = [];
   if (allMovies && allMovies?.length) {
     formatedAllMovies = allMovies;
