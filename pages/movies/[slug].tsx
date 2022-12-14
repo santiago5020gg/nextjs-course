@@ -1,9 +1,8 @@
 import { GetStaticProps } from "next";
 import { MovieDesign } from "../../components/movies/movie";
-import { getMoviesFromMongoDb } from "../../lib/mongodb/movie";
+import { getMovieByIdFromMongoDb } from "../../lib/mongodb/movie";
 import { Movie } from "../../models/interfaces/movie";
-import connectMongoDb from "../../models/services/mongodb/config";
-import { IsMovieArray } from "../../models/typeGuards/movie";
+import { isMovie, IsMovieArray } from "../../models/typeGuards/movie";
 
 type MovieDetail = Movie & { description: string };
 
@@ -18,19 +17,30 @@ const MovieBySlug = ({ movie }: { movie: MovieDetail }) => {
   );
 };
 
+const getMovieBySlug = async (slug: string): Promise<Movie | null> => {
+  try {
+    const findResult = await getMovieByIdFromMongoDb(slug);
+    if (!isMovie(findResult)) {
+      return null;
+    }
+    return {
+      id: findResult.id,
+      title: findResult.title,
+      img: findResult.img,
+      enable: findResult.enable,
+    };
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+};
+
 export async function getStaticPaths() {
-  const movies = await getMoviesFromMongoDb();
   let paths = [
     {
       params: { slug: "1" },
     },
   ];
-  if (!IsMovieArray(movies)) {
-  } else {
-    paths = movies.slice(0, 2).map((elem) => ({
-      params: { slug: elem.id },
-    }));
-  }
 
   return {
     paths,
@@ -38,29 +48,10 @@ export async function getStaticPaths() {
   };
 }
 
-const getAllMovies = async () => {
-  try {
-    const findResult = await getMoviesFromMongoDb();
-    if (!IsMovieArray(findResult)) {
-      return [];
-    }
-    return findResult.map((elem) => ({
-      id: elem.id,
-      title: elem.title,
-      img: elem.img,
-      enable: elem.enable,
-    }));
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
-};
-
 export const getStaticProps: GetStaticProps | null = async (context) => {
   const slug = context.params?.slug;
-  const allMovies: Movie[] = await getAllMovies();
-  const movie = allMovies.find(
-    (elem) => elem.id === slug && elem.enable === true
+  const movie: Movie | null = await getMovieBySlug(
+    typeof slug === "string" ? slug : "nothing"
   );
   if (!movie) {
     return {

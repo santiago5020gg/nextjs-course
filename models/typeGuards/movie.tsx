@@ -8,3 +8,8 @@ export const IsMovieArray = (movies: any): movies is Movie[] => {
     !!(movies as Movie[])[0].id;
   return res_;
 };
+
+
+export const isMovie = (movie: any): movie is Movie => {
+  return movie && (movie as Movie).id;
+}
