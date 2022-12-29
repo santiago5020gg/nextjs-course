@@ -25,20 +25,16 @@ const server = setupServer(
 
 beforeAll(() => {
   server.listen();
+  render(<Home moviesList={movieListMock} hero={heroMock} />);
 });
-
 
 afterEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
 
 describe("Home", () => {
-  beforeAll(() => {
-    render(<Home moviesList={movieListMock} hero={heroMock} />);
-  });
-
-  it("should renders show all plans", () => {
-    const contactElement = screen.getByText(/show all plans/i);
+  it("should renders  a description of plans", async() => {
+    const contactElement = await screen.findByText(/disfruta solo en Smartphones y Tabletas/i);
     expect(contactElement).toBeInTheDocument();
   });
 });
