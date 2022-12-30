@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "title": "Móvil",
+    "price": "13.900,00",
+    "benefits": [
+      "Disfruta solo en Smartphones y Tabletas",
+      "Ve en 1 dispositivo a la vez",
+      "Contenido en definición estándar",
+      "Descarga y disfruta tus títulos preferidos donde sea"
+    ]
+  },
+  {
+    "_id": { "$oid": "636af80b5f7b9bf1f11fb562" },
+    "id": "3",
+    "title": "Premium",
+    "price": "20.900,00",
+    "benefits": [
+      "Disfruta solo en Smartphones y Tabletas. Oiste!!",
+      "Te regalamos 100 mil dolares al mes, el negocio se va a quebrar"
+    ]
+  }
+]

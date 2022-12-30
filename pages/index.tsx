@@ -1,11 +1,10 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Hero } from "../components/home-page/hero";
 import { Plans } from "../components/home-page/plans";
 import { Movies } from "../components/movies";
-import PeriodProvider from "../contexts/period";
-import PlanProvider from "../contexts/plans";
+import { PlanContext } from "../contexts/plans";
 import { HeroType } from "../models/interfaces/hero";
 import { Movie } from "../models/interfaces/movie";
 import { Plan } from "../models/interfaces/plans";
@@ -20,10 +19,13 @@ const Home = ({
   hero: HeroType;
 }) => {
   const [plansList, setPlansList] = useState<Plan[] | null>(null);
+  const planContext = useContext(PlanContext);
 
-  const getInitPlans = async () => {
+  const getInitPlans = useCallback(async () => {
+    const urlPlans =
+      planContext?.numberClicks === 3 ? "/api/plans/full" : "/api/plans/2";
     try {
-      const response = await fetch(`/api/plans/2`);
+      const response = await fetch(urlPlans);
       if (!response.ok) {
         console.log("getInitPlans response.ok");
         const text = await response.text();
@@ -35,11 +37,11 @@ const Home = ({
     } catch (error) {
       console.log("Something went wrong. getInitPlans", error);
     }
-  };
+  }, [planContext?.numberClicks]);
 
   useEffect(() => {
     getInitPlans();
-  }, []);
+  }, [getInitPlans, planContext?.numberClicks]);
 
   return (
     <div>
@@ -49,19 +51,14 @@ const Home = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-col gap-y-14">
-        <PlanProvider>
-          <PeriodProvider>
-            <Hero price={hero.price} description={hero.description} />
-            <Plans plans={plansList} />
-            <Link href="/all-plans">Show all Plans</Link>
-            <Movies movies={moviesList} />
-          </PeriodProvider>
-        </PlanProvider>
+        <Hero price={hero.price} description={hero.description} />
+        <Plans plans={plansList} />
+        <Link href="/all-plans">Show all Plans</Link>
+        <Movies movies={moviesList} />
       </div>
     </div>
   );
 };
-
 
 export async function getStaticProps() {
   const allMovies: Movie[] = await getAllMovies();

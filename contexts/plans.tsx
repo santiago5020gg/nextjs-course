@@ -9,22 +9,31 @@ export type PricePlan = {
 
 export type PlanPriceProps = PricePlan & {
   setPlanPrice: (value: PricePlan) => void;
+  numberClicks: number
 };
 
 export const PlanContext = React.createContext<PlanPriceProps | null>(null);
 
 const PlanProvider = ({ children }: { children: ReactNode }) => {
+  const [numberClicks, setNumberClicks] = useState(0);
   const [planState, setPlanState] = useState<PricePlan>({
     price: null,
-    type: null,
+    type: null
   });
 
-  const setPlanPrice = (value: PricePlan) => setPlanState(value);
+
+  const setPlanPrice = (value: PricePlan) => {
+    if(value.type === 'Móvil'){
+      setNumberClicks(numberClicks + 1);
+    }
+    setPlanState(value);
+  };
 
   return (
     <PlanContext.Provider
       value={{
         ...planState,
+        numberClicks,
         setPlanPrice,
       }}
     >
