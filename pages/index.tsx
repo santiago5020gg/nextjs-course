@@ -43,7 +43,7 @@ const Home = ({
     } catch (error) {
       console.log("Something went wrong. getInitPlans", error);
     }
-  }, [getUrlPlan, planContext?.numberClicks]);
+  }, [getUrlPlan]);
 
   useEffect(() => {
     getInitPlans();
