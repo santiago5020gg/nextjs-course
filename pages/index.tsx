@@ -21,9 +21,15 @@ const Home = ({
   const [plansList, setPlansList] = useState<Plan[] | null>(null);
   const planContext = useContext(PlanContext);
 
+  const getUrlPlan = useCallback(() => {
+    if (planContext?.numberClicks === 3 || planContext?.numberClicks === 10) {
+      return "/api/plans/full";
+    }
+    return "/api/plans/2";
+  }, [planContext?.numberClicks]);
+
   const getInitPlans = useCallback(async () => {
-    const urlPlans =
-      planContext?.numberClicks === 3 ? "/api/plans/full" : "/api/plans/2";
+    const urlPlans = getUrlPlan();
     try {
       const response = await fetch(urlPlans);
       if (!response.ok) {
@@ -37,7 +43,7 @@ const Home = ({
     } catch (error) {
       console.log("Something went wrong. getInitPlans", error);
     }
-  }, [planContext?.numberClicks]);
+  }, [getUrlPlan, planContext?.numberClicks]);
 
   useEffect(() => {
     getInitPlans();

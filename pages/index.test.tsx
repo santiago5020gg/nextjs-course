@@ -65,7 +65,11 @@ describe("Plans of home", () => {
       name: buttonName,
     });
     for (let i = 0; i < times; i++) {
-      fireEvent.click(movilPlanButton);
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          resolve(fireEvent.click(movilPlanButton));
+        }, 90)
+      );
     }
   };
   it(`if the user makes click on 'Elige plan movil' 3 times
@@ -81,7 +85,7 @@ describe("Plans of home", () => {
     ).toBeInTheDocument();
   });
 
-  it(`If the user makes click more than 3 times 
+  it(`If the user makes click on 'Elige plan movil' more than 3 times 
   it should dissapear the premium plan`, async () => {
     clickOnPlanButton(4);
     await waitFor(() => {
@@ -91,9 +95,32 @@ describe("Plans of home", () => {
     });
   });
 
-  it(`If the user makes click 2 times 
+  it(`If the user makes click 2 times on 'Elige plan movil'
   it should not show the premium plan`, async () => {
     clickOnPlanButton(2);
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: /elige plan premium/i })
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it(`if the user makes click on 'Elige plan movil' 10 times
+  it should show an aditional plan called Premium `, async () => {
+    clickOnPlanButton(10);
+    expect(
+      await screen.findByText(
+        /te regalamos 100 mil dolares al mes, el negocio se va a quebrar/i
+      )
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /elige plan premium/i })
+    ).toBeInTheDocument();
+  });
+
+  it(`if the user makes click on 'Elige plan movil' more than 10 times
+  it should not show an aditional plan called Premium `, async () => {
+    clickOnPlanButton(11);
     await waitFor(() => {
       expect(
         screen.queryByRole("button", { name: /elige plan premium/i })
