@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import Home from "./index";
 import { Movie } from "../models/interfaces/movie";
 import { HeroType } from "../models/interfaces/hero";
@@ -32,14 +32,22 @@ beforeAll(() => {
   server.listen();
 });
 
+beforeEach(() => {
+  const HomeWithContext = (
+    <PlanProvider>
+      <PeriodProvider>
+        <Home moviesList={movieListMock} hero={heroMock} />
+      </PeriodProvider>
+    </PlanProvider>
+  );
+  render(HomeWithContext);
+});
+
 afterEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
 
 describe("Home", () => {
-  beforeEach(() => {
-    render(<Home moviesList={movieListMock} hero={heroMock} />);
-  });
   it("should renders  a description of plans", async () => {
     const contactElement = await screen.findByText(
       /disfruta solo en Smartphones y Tabletas/i
@@ -49,29 +57,47 @@ describe("Home", () => {
 });
 
 describe("Plans of home", () => {
-  beforeEach(() => {
-    const HomeWithContext = (
-      <PlanProvider>
-        <PeriodProvider>
-          <Home moviesList={movieListMock} hero={heroMock} />
-        </PeriodProvider>
-      </PlanProvider>
-    );
-    render(HomeWithContext);
-  });
+  const clickOnPlanButton = async (
+    times: number,
+    buttonName: RegExp = /elige plan móvil/i
+  ) => {
+    const movilPlanButton = await screen.findByRole("button", {
+      name: buttonName,
+    });
+    for (let i = 0; i < times; i++) {
+      fireEvent.click(movilPlanButton);
+    }
+  };
   it(`if the user makes click on 'Elige plan movil' 3 times
   it should show an aditional plan called Premium `, async () => {
-    const movilPlanButton = await screen.findByRole("button", {
-      name: /elige plan móvil/i,
-    });
-    fireEvent.click(movilPlanButton);
-    fireEvent.click(movilPlanButton);
-    fireEvent.click(movilPlanButton);
+    clickOnPlanButton(3);
     expect(
       await screen.findByText(
         /te regalamos 100 mil dolares al mes, el negocio se va a quebrar/i
       )
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /elige plan premium/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /elige plan premium/i })
+    ).toBeInTheDocument();
+  });
+
+  it(`If the user makes click more than 3 times 
+  it should dissapear the premium plan`, async () => {
+    clickOnPlanButton(4);
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: /elige plan premium/i })
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it(`If the user makes click 2 times 
+  it should not show the premium plan`, async () => {
+    clickOnPlanButton(2);
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("button", { name: /elige plan premium/i })
+      ).not.toBeInTheDocument();
+    });
   });
 });
