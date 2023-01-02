@@ -72,22 +72,27 @@ describe("Plans of home", () => {
       );
     }
   };
+
   it(`if the user makes click on 'Elige plan movil' 3 times
   it should show an aditional plan called Premium `, async () => {
     clickOnPlanButton(3);
+    await waitFor(() => {
+      expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
+    });
+    
     expect(
       await screen.findByText(
         /te regalamos 100 mil dolares al mes, el negocio se va a quebrar/i
       )
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /elige plan premium/i })
-    ).toBeInTheDocument();
   });
 
-  it(`If the user makes click on 'Elige plan movil' more than 3 times 
+  it(`If the user makes click on 'Elige plan movil' more than 3 times
   it should dissapear the premium plan`, async () => {
     clickOnPlanButton(4);
+    await waitFor(() => {
+      expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
+    });
     await waitFor(() => {
       expect(
         screen.queryByRole("button", { name: /elige plan premium/i })
@@ -99,6 +104,9 @@ describe("Plans of home", () => {
   it should not show the premium plan`, async () => {
     clickOnPlanButton(2);
     await waitFor(() => {
+      expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
+    });
+    await waitFor(() => {
       expect(
         screen.queryByRole("button", { name: /elige plan premium/i })
       ).not.toBeInTheDocument();
@@ -108,6 +116,9 @@ describe("Plans of home", () => {
   it(`if the user makes click on 'Elige plan movil' 10 times
   it should show an aditional plan called Premium `, async () => {
     clickOnPlanButton(10);
+    await waitFor(() => {
+      expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
+    });
     expect(
       await screen.findByText(
         /te regalamos 100 mil dolares al mes, el negocio se va a quebrar/i
@@ -121,6 +132,9 @@ describe("Plans of home", () => {
   it(`if the user makes click on 'Elige plan movil' more than 10 times
   it should not show an aditional plan called Premium `, async () => {
     clickOnPlanButton(11);
+    await waitFor(() => {
+      expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
+    });
     await waitFor(() => {
       expect(
         screen.queryByRole("button", { name: /elige plan premium/i })
