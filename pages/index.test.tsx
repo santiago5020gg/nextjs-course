@@ -32,7 +32,12 @@ beforeAll(() => {
   server.listen();
 });
 
-beforeEach(() => {
+
+afterEach(() => server.resetHandlers());
+
+afterAll(() => server.close());
+
+const renderDefaultHome = () => {
   const HomeWithContext = (
     <PlanProvider>
       <PeriodProvider>
@@ -41,14 +46,11 @@ beforeEach(() => {
     </PlanProvider>
   );
   render(HomeWithContext);
-});
-
-afterEach(() => server.resetHandlers());
-
-afterAll(() => server.close());
+}
 
 describe("Home", () => {
   it("should renders  a description of plans", async () => {
+    renderDefaultHome();
     const contactElement = await screen.findByText(
       /disfruta solo en Smartphones y Tabletas/i
     );
@@ -75,6 +77,7 @@ describe("Plans of home", () => {
 
   it(`if the user makes click on 'Elige plan movil' 3 times
   it should show an aditional plan called Premium `, async () => {
+    renderDefaultHome();
     clickOnPlanButton(3);
     await waitFor(() => {
       expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
@@ -89,6 +92,7 @@ describe("Plans of home", () => {
 
   it(`If the user makes click on 'Elige plan movil' more than 3 times
   it should dissapear the premium plan`, async () => {
+    renderDefaultHome();
     clickOnPlanButton(4);
     await waitFor(() => {
       expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
@@ -102,6 +106,7 @@ describe("Plans of home", () => {
 
   it(`If the user makes click 2 times on 'Elige plan movil'
   it should not show the premium plan`, async () => {
+    renderDefaultHome();
     clickOnPlanButton(2);
     await waitFor(() => {
       expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
@@ -115,6 +120,7 @@ describe("Plans of home", () => {
 
   it(`if the user makes click on 'Elige plan movil' 10 times
   it should show an aditional plan called Premium `, async () => {
+    renderDefaultHome();
     clickOnPlanButton(10);
     await waitFor(() => {
       expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
@@ -131,6 +137,7 @@ describe("Plans of home", () => {
 
   it(`if the user makes click on 'Elige plan movil' more than 10 times
   it should not show an aditional plan called Premium `, async () => {
+    renderDefaultHome();
     clickOnPlanButton(11);
     await waitFor(() => {
       expect(screen.queryByText("...Loading")).not.toBeInTheDocument();
