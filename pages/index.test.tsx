@@ -1,3 +1,4 @@
+import * as jest from 'jest';
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import Home from "./index";
 import { Movie } from "../models/interfaces/movie";

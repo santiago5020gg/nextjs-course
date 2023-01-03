@@ -1,3 +1,4 @@
+import * as jest from 'jest';
 import "@testing-library/react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { rest } from "msw";
