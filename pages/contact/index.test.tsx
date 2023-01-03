@@ -5,7 +5,7 @@ import { setupServer } from "msw/node";
 import Contact from ".";
 
 const server = setupServer(
-  rest.post("/contact", (req, res, ctx) => {
+  rest.post("/api/contact", (req, res, ctx) => {
     return res(ctx.status(200), ctx.json({}));
   })
 );
@@ -43,17 +43,17 @@ const fillAndExpectValueInput = (
   expect(textMessage).toHaveValue(valueMessage);
 };
 
-const buttonHassDisabledClass = (className: string = "bg-gray-100") =>
+const buttonHasDisabledClass = (className: string = "!bg-gray-100") =>
   getButton().classList.contains(className);
 
 const expectDisabledButton = () => {
   expect(getButton()).toBeDisabled();
-  expect(buttonHassDisabledClass()).toBeTruthy();
+  expect(buttonHasDisabledClass()).toBeTruthy();
 };
 
-const expectEnableddButton = () => {
+const expectEnabledButton = () => {
   expect(getButton()).toBeEnabled();
-  expect(buttonHassDisabledClass()).toBeFalsy();
+  expect(buttonHasDisabledClass()).toBeFalsy();
 };
 
 describe("Contact main section", () => {
@@ -87,7 +87,6 @@ describe("Contact main section", () => {
   if the name or message are empty`, async () => {
     render(<Contact />);
     expectDisabledButton();
-    expect(getButton().classList.contains("bg-gray-100")).toBeTruthy();
   });
 
   it(`The button 'Enviar' should be disabled 
@@ -137,21 +136,21 @@ describe("Contact main section", () => {
   if the name and textmessage are alphanumeric and textmessage includes '?' `, () => {
     render(<Contact />);
     fillAndExpectValueInput("aAjsjKK123312", "AAAbsb122 2?.");
-    expectEnableddButton();
+    expectEnabledButton();
   });
 
   it(`The button 'Enviar' should be enabled 
   if the name and textmessage are alphanumeric and textmessage includes '?.!' `, () => {
     render(<Contact />);
     fillAndExpectValueInput("AAA8 8281", "AAAbsb 1222???!!...ABC.");
-    expectEnableddButton();
+    expectEnabledButton();
   });
 
   it(`The button 'Enviar' should be enabled 
   if the name and textmessage are alphanumeric and textmessage includes '....' `, async () => {
     render(<Contact />);
     fillAndExpectValueInput("babs jsjas", "ab2828...");
-    expectEnableddButton();
+    expectEnabledButton();
   });
 
   it(`The button 'Enviar' should be enabled 
@@ -161,7 +160,7 @@ describe("Contact main section", () => {
       "Nombre completo   como yo",
       "mi mensaje es     largo a ver...."
     );
-    expectEnableddButton();
+    expectEnabledButton();
   });
 
   it(`it should show 'La informacion ha sido enviada.'
@@ -173,12 +172,68 @@ describe("Contact main section", () => {
     expect(await screen.findByText(/La informacion ha sido enviada./i));
   });
 
+  it(`the button should be disabled when
+  the info is sending. After sending should be enabled`, async () => {
+    render(<Contact />);
+    const button = getButton();
+    fillInputs("Juan Torres Quintero", "my message request for the company");
+    fireEvent.click(button);
+    await waitFor(() => {
+      expectDisabledButton();
+    });
+    await waitFor(() => {
+      expectEnabledButton();
+    });
+  });
+
+  it(`the button should be disabled when
+  the info is sending. After sending and get error 500 should be enabled`, async () => {
+    server.use(
+      // override the initial "GET /greeting" request handler
+      // to return a 500 Server Error
+      rest.post("/api/contact", (req, res, ctx) => {
+        return res(ctx.status(500));
+      })
+    );
+    render(<Contact />);
+    const button = getButton();
+    fillInputs("Juan Torres Quintero", "my message request for the company");
+    fireEvent.click(button);
+    await waitFor(() => {
+      expectDisabledButton();
+    });
+    await waitFor(() => {
+      expectEnabledButton();
+    });
+  });
+
+  it(`the button should be disabled when
+  the info is sending. After sending and get error 400 should be enabled`, async () => {
+    server.use(
+      // override the initial "GET /greeting" request handler
+      // to return a 500 Server Error
+      rest.post("/api/contact", (req, res, ctx) => {
+        return res(ctx.status(500));
+      })
+    );
+    render(<Contact />);
+    const button = getButton();
+    fillInputs("Juan Torres Quintero", "my message request for the company");
+    fireEvent.click(button);
+    await waitFor(() => {
+      expectDisabledButton();
+    });
+    await waitFor(() => {
+      expectEnabledButton();
+    });
+  });
+
   test(`it should show 'Ha ocurrido un error inesperado. Intente mas tarde.'
   when it's press the button 'Enviar' and the server has 500 error`, async () => {
     server.use(
       // override the initial "GET /greeting" request handler
       // to return a 500 Server Error
-      rest.post("/contact", (req, res, ctx) => {
+      rest.post("/api/contact", (req, res, ctx) => {
         return res(ctx.status(500));
       })
     );
@@ -196,7 +251,7 @@ describe("Contact main section", () => {
   test(`it should show 'Los datos no fueron procesados correctamente.'
   when it's press the button 'Enviar' and the server has 400 error`, async () => {
     server.use(
-      rest.post("/contact", (req, res, ctx) => {
+      rest.post("/api/contact", (req, res, ctx) => {
         return res(ctx.status(400));
       })
     );
@@ -205,9 +260,7 @@ describe("Contact main section", () => {
     fillInputs("Juan Torres Quintero", "my message request for the company");
     fireEvent.click(button);
     expect(
-      await screen.findByText(
-        /Los datos no fueron procesados correctamente./i
-      )
+      await screen.findByText(/Los datos no fueron procesados correctamente./i)
     );
   });
 });

@@ -5,6 +5,7 @@ const Contact = () => {
   const [inputName, setInputName] = useState("");
   const [textMessage, setTextMessage] = useState("");
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const isInvalidForm = () => {
     const regXInput = /^[a-z0-9 ]+$/i;
@@ -22,7 +23,8 @@ const Contact = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("/contact", {
+      setIsLoading(true);
+      const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +36,9 @@ const Contact = () => {
       }
       await response.json();
       setMessage("La informacion ha sido enviada.");
+      setIsLoading(false);
     } catch (error: any) {
+      setIsLoading(false);
       if(error?.status === 400){
         setMessage("Los datos no fueron procesados correctamente.");
         return;
@@ -64,8 +68,8 @@ const Contact = () => {
           placeholder="Dejanos tu mensaje"
         />
         <CustomButton
-          className={isInvalidForm() ? "bg-gray-100" : ""}
-          disabled={isInvalidForm()}
+          className={isInvalidForm() || isLoading ? "!bg-gray-100" : ""}
+          disabled={isInvalidForm() || isLoading}
           onClick={handleSubmit}
         >
           Enviar
