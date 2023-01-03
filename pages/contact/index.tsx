@@ -39,7 +39,7 @@ const Contact = () => {
       setIsLoading(false);
     } catch (error: any) {
       setIsLoading(false);
-      if(error?.status === 400){
+      if (error?.status === 400) {
         setMessage("Los datos no fueron procesados correctamente.");
         return;
       }
@@ -48,25 +48,32 @@ const Contact = () => {
   };
 
   return (
-    <div>
-      <h1>Welcome, contact us</h1>;
-      <form>
-        <label htmlFor="name">Nombres:</label>
+    <div className="flex flex-col gap-5">
+      <h1>Welcome, contact us</h1>
+      <div className="flex flex-col gap-5 border-black border">
         <h1>{message}</h1>
-        <input
-          id="name"
-          type="text"
-          aria-label="Nombre completo"
-          placeholder="Escribe tu nombre"
-          value={inputName}
-          onChange={(e) => setInputName(e.currentTarget.value)}
-        />
-        <textarea
-          value={textMessage}
-          onChange={(e) => setTextMessage(e.currentTarget.value)}
-          aria-label="mensaje"
-          placeholder="Dejanos tu mensaje"
-        />
+        <div className="flex flex-col gap-8">
+          <div>
+            <label htmlFor="name">Nombres:</label>
+            <input
+              id="name"
+              type="text"
+              aria-label="Nombre completo"
+              placeholder="Escribe tu nombre"
+              value={inputName}
+              onChange={(e) => setInputName(e.currentTarget.value)}
+            />
+          </div>
+          <div>
+            <textarea
+              value={textMessage}
+              onChange={(e) => setTextMessage(e.currentTarget.value)}
+              aria-label="mensaje"
+              placeholder="Dejanos tu mensaje"
+              className="w-full"
+            />
+          </div>
+        </div>
         <CustomButton
           className={isInvalidForm() || isLoading ? "!bg-gray-100" : ""}
           disabled={isInvalidForm() || isLoading}
@@ -74,7 +81,7 @@ const Contact = () => {
         >
           Enviar
         </CustomButton>
-      </form>
+      </div>
     </div>
   );
 };
